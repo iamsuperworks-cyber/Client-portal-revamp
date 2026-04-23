@@ -36,15 +36,12 @@ const AppSidebar = () => {
 
   return (
     <aside
-      className="fixed top-0 left-0 h-screen flex flex-col bg-card z-40"
+      className="hidden md:flex fixed top-0 left-0 h-screen flex-col bg-card z-40"
       style={{ width: 220, borderRight: "0.5px solid hsl(var(--border))" }}
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-4">
-        <span className="font-heading text-lg font-bold tracking-tight text-foreground">
-          Rivo{" "}
-          <span className="text-primary">Portal</span>
-        </span>
+        <img src="/rivo-logo.png" alt="Rivo" className="h-8 w-auto" />
       </div>
 
       {/* Nav items */}
@@ -55,6 +52,7 @@ const AppSidebar = () => {
             <button
               key={item.label}
               onClick={() => navigate(item.route)}
+              data-tour={item.dotKey === "documents" ? "documents-nav" : undefined}
               className={cn(
                 "relative flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm font-body transition-colors text-left",
                 active

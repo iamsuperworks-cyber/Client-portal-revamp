@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Toaster as ToasterSonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +9,9 @@ import { WelcomeStateProvider } from "./contexts/WelcomeStateContext";
 import { PersonaProvider } from "./contexts/PersonaContext";
 import { QueriesProvider } from "./contexts/QueriesContext";
 import AppSidebar from "./components/AppSidebar";
+import BottomNav from "./components/BottomNav";
 import TopBar from "./components/TopBar";
+import ProductTour from "./components/ProductTour";
 import AccountSettings from "./pages/AccountSettings.tsx";
 import Index from "./pages/Index.tsx";
 import WelcomeHome from "./pages/WelcomeHome.tsx";
@@ -22,6 +25,14 @@ import Login from "./pages/Login.tsx";
 import VerifyOtp from "./pages/VerifyOtp.tsx";
 import QueryDetail from "./pages/QueryDetail.tsx";
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 const queryClient = new QueryClient();
 
 const AppLayout = () => {
@@ -32,13 +43,18 @@ const AppLayout = () => {
     sessionStorage.setItem("redirectPath", location.pathname);
     return <Navigate to="/login" replace />;
   }
+  const isHome = location.pathname === "/";
   return (
     <div className="flex min-h-screen w-full">
       <AppSidebar />
-      <div className="flex-1 relative" style={{ marginLeft: 220 }}>
+      <div className="flex-1 relative md:ml-[220px]">
         <TopBar />
-        <Outlet />
+        <div className="pb-20 md:pb-0">
+          <Outlet />
+        </div>
       </div>
+      <BottomNav />
+      {isHome && <ProductTour />}
     </div>
   );
 };
@@ -53,6 +69,7 @@ const App = () => (
           <PersonaProvider>
             <QueriesProvider>
               <BrowserRouter>
+                <ScrollToTop />
                 <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/verify" element={<VerifyOtp />} />

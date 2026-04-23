@@ -77,6 +77,10 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
         "accordion-down": {
           from: {
             height: "0",
@@ -97,11 +101,27 @@ export default {
           from: { opacity: "0", transform: "translateY(4px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        "tour-ring": {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.7" },
+          "50%": { transform: "scale(1.08)", opacity: "0.3" },
+        },
+        "tour-bounce-y": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "tour-bounce-x": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(-8px)" },
+        },
       },
       animation: {
+        shimmer: "shimmer 1.8s ease-in-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.4s ease-out",
+        "tour-ring": "tour-ring 1.8s ease-in-out infinite",
+        "tour-bounce-y": "tour-bounce-y 1.2s ease-in-out infinite",
+        "tour-bounce-x": "tour-bounce-x 1.2s ease-in-out infinite",
       },
     },
   },

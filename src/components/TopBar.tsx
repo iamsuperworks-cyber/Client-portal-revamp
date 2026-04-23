@@ -87,13 +87,21 @@ const TopBar = () => {
   };
 
   return (
-    <div className="sticky top-0 right-0 z-40 flex items-center justify-end gap-1 px-6 py-1">
+    <div className="sticky top-0 z-40 flex items-center bg-card border-b border-border px-4 md:px-6 py-2 md:py-1 relative">
+      {/* Logo — mobile only */}
+      <div className="flex-1 md:hidden">
+        <img src="/rivo-logo.png" alt="Rivo" className="h-5 w-auto" />
+      </div>
+
+      {/* Right actions */}
+      <div className="flex items-center gap-1 md:ml-auto">
+
       {/* Notifications */}
-      <div ref={notificationsRef} className="relative">
+      <div ref={notificationsRef}>
         <button
           onClick={toggleNotifications}
           className={cn(
-            "relative flex items-center justify-center h-9 w-9 rounded-md transition-colors",
+            "relative flex items-center justify-center h-10 w-10 md:h-9 md:w-9 rounded-md transition-colors",
             notificationsOpen
               ? "bg-muted/60 text-foreground"
               : "text-muted-foreground hover:bg-muted/60"
@@ -105,7 +113,7 @@ const TopBar = () => {
           )}
         </button>
         {notificationsOpen && (
-          <div className="absolute top-full right-0 mt-1 w-72 bg-card rounded-lg border border-border shadow-lg overflow-hidden z-50">
+          <div className="absolute top-full right-4 md:right-6 mt-1 w-72 bg-card rounded-lg border border-border shadow-lg overflow-hidden z-50">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <span className="font-heading text-sm font-semibold text-foreground">Notifications</span>
               <button className="text-xs text-primary font-medium hover:underline">Mark all as read</button>
@@ -139,7 +147,7 @@ const TopBar = () => {
       </div>
 
       {/* Account */}
-      <div ref={accountRef} className="relative">
+      <div ref={accountRef}>
         <button
           onClick={toggleAccount}
           className={cn(
@@ -149,13 +157,13 @@ const TopBar = () => {
               : "text-muted-foreground hover:bg-muted/60"
           )}
         >
-          <span className="flex items-center justify-center h-7 w-7 rounded-full bg-primary/10 text-primary text-xs font-semibold shrink-0">
+          <span className="flex items-center justify-center h-8 w-8 md:h-7 md:w-7 rounded-full bg-primary/10 text-primary text-xs font-semibold shrink-0">
             {activePersona?.initials || "RK"}
           </span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
         {accountOpen && (
-          <div className="absolute top-full right-0 mt-1 w-56 bg-card rounded-lg border border-border shadow-lg overflow-hidden z-50">
+          <div className="absolute top-full right-4 md:right-6 mt-1 w-56 bg-card rounded-lg border border-border shadow-lg overflow-hidden z-50">
             <div className="px-4 py-3 border-b border-border">
               <p className="text-sm font-semibold text-foreground">{activePersona?.fullName || "Rajesh Kumar Nair"}</p>
               <p className="text-xs text-muted-foreground mt-0.5 truncate">{activePersona?.email || "rajesh.nair80@gmail.com"}</p>
@@ -174,6 +182,8 @@ const TopBar = () => {
             </div>
           </div>
         )}
+      </div>
+
       </div>
     </div>
   );

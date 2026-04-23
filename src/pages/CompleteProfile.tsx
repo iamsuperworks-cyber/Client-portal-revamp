@@ -101,7 +101,7 @@ const CompleteProfile = ({ onComplete }: CompleteProfileProps) => {
   const [hasOtherLoans, setHasOtherLoans] = useState("No");
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-0 pb-32 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4 relative flex flex-col">
+    <div className="min-h-screen bg-background px-6 pt-5 pb-32 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4 relative flex flex-col">
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
           Complete Your Profile

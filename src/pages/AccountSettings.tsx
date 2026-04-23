@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePersona } from "@/contexts/PersonaContext";
+import { usePageLoader } from "@/hooks/use-page-loader";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 type Screen = "main" | "kyc";
 
@@ -58,6 +60,7 @@ const RadioGroup = ({
 );
 
 const AccountSettings = () => {
+  const isLoading = usePageLoader();
   const navigate = useNavigate();
   const { activePersona } = usePersona();
   const [screen, setScreen] = useState<Screen>("main");
@@ -96,12 +99,14 @@ const AccountSettings = () => {
   const [coJobTitle, setCoJobTitle] = useState(co?.jobTitle || "");
   const [coYearsAtEmployer, setCoYearsAtEmployer] = useState(co?.yearsAtEmployer || "");
 
+  if (isLoading) return <ProfileSkeleton />;
+
   const fieldClass = "w-full font-body text-sm bg-background border border-border rounded-sm px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary";
   const selectClass = `${fieldClass} cursor-pointer`;
 
   if (screen === "kyc") {
     return (
-      <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+      <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
         {/* Back button */}
         <div className="max-w-6xl mb-4">
           <button onClick={() => setScreen("main")} className="flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -118,7 +123,7 @@ const AccountSettings = () => {
             </div>
             <div>
               {kycDocuments.map((doc, i) => (
-                <div key={doc} className={`flex items-center justify-between py-4 px-2 -mx-2 rounded-sm hover:bg-muted/50 transition-colors ${i > 0 ? "border-t border-border/50" : ""}`}>
+                <div key={doc} className={`flex items-center justify-between py-4 rounded-sm hover:bg-muted/50 transition-colors ${i > 0 ? "border-t border-border/50" : ""}`}>
                   <span className="font-body text-sm text-foreground">{doc}</span>
                   <Button variant="outline" size="sm" disabled>View</Button>
                 </div>
@@ -140,13 +145,13 @@ const AccountSettings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+    <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4 overflow-x-hidden">
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">My Profile</h1>
-        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-8">Your personal information and application details.</p>
+        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-6 md:mb-8">Your personal information and application details.</p>
       </div>
 
-      <div className="max-w-6xl space-y-12">
+      <div className="max-w-6xl space-y-8 md:space-y-12">
 
         {/* About You */}
         <section>
@@ -351,7 +356,7 @@ const AccountSettings = () => {
         </section>
 
         {/* Data & Privacy */}
-        <div className="border-t-2 border-border pt-12">
+        <div className="border-t-2 border-border pt-8 md:pt-12">
           <section>
             <p className="font-heading text-xs tracking-widest uppercase text-muted-foreground mb-6">Data & Privacy</p>
             <div className="flex items-start gap-3 rounded-sm border border-warning-border bg-warning px-5 py-4 mb-6">
@@ -363,23 +368,23 @@ const AccountSettings = () => {
             <div className="mb-6">
               <p className="font-heading text-sm font-semibold text-foreground mb-1">Your Signature</p>
               <p className="font-body text-xs text-muted-foreground mb-3">Saved signature used to sign your documents</p>
-              <div className="border border-border rounded-sm px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-20 h-9 border border-border rounded-sm bg-muted flex items-center justify-center">
-                    <p style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "14px", color: "hsl(var(--primary))", margin: 0 }}>
+              <div className="border border-border rounded-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-16 h-9 shrink-0 border border-border rounded-sm bg-muted flex items-center justify-center">
+                    <p style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "13px", color: "hsl(var(--primary))", margin: 0 }}>
                       {activePersona ? `${activePersona.initials.split("").join(". ")}.` : "R. Nair"}
                     </p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-body text-sm font-medium text-foreground">Signature saved</p>
                     <p className="font-body text-xs text-muted-foreground mt-0.5">Used for signing documents</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <button disabled className="font-body text-[12px] font-semibold cursor-not-allowed rounded-sm border border-border text-muted-foreground inline-flex items-center justify-center gap-1.5" style={{ width: "83.25px", height: "30px" }}>
+                  <button disabled className="font-body text-[12px] font-semibold cursor-not-allowed rounded-sm border border-border text-muted-foreground inline-flex items-center justify-center gap-1.5 px-3 h-8">
                     <Eye className="h-3 w-3" />View
                   </button>
-                  <button disabled className="font-body text-[12px] font-semibold cursor-not-allowed rounded-sm bg-destructive text-white opacity-60 inline-flex items-center justify-center gap-1.5" style={{ width: "83.25px", height: "30px" }}>
+                  <button disabled className="font-body text-[12px] font-semibold cursor-not-allowed rounded-sm bg-destructive text-white opacity-60 inline-flex items-center justify-center gap-1.5 px-3 h-8">
                     <Trash2 className="h-3 w-3" />Delete
                   </button>
                 </div>
@@ -389,7 +394,7 @@ const AccountSettings = () => {
               <p className="font-heading text-sm font-semibold text-foreground mb-2">KYC Documents</p>
               <button
                 onClick={() => setScreen("kyc")}
-                className="w-full py-4 px-2 -mx-2 rounded-sm hover:bg-muted/50 transition-colors cursor-pointer border-t border-border/50 flex items-center justify-between text-left"
+                className="w-full py-4 rounded-sm hover:bg-muted/50 transition-colors cursor-pointer border-t border-border/50 flex items-center justify-between text-left"
               >
                 <div>
                   <span className="font-body text-sm text-foreground">KYC Documents</span>

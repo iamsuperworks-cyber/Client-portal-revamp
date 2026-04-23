@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUpload } from "@/contexts/UploadContext";
+import { usePageLoader } from "@/hooks/use-page-loader";
+import WelcomeHomeSkeleton from "@/components/skeletons/WelcomeHomeSkeleton";
 import Index from "./Index";
 import WelcomeHome from "./WelcomeHome";
 import CompleteProfile from "./CompleteProfile";
 
 const HomePage = () => {
+  const isLoading = usePageLoader();
   const navigate = useNavigate();
   const { hasUploaded } = useUpload();
   const [profileCompleted, setProfileCompleted] = useState(() => {
@@ -14,6 +17,8 @@ const HomePage = () => {
   
   // Track the current step in the initial flow
   const [currentStep, setCurrentStep] = useState<'banks' | 'profile'>('banks');
+
+  if (isLoading) return <WelcomeHomeSkeleton />;
 
   // If profile is completed, show the main dashboard
   if (profileCompleted) {

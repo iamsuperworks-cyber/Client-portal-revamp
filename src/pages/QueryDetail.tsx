@@ -129,7 +129,7 @@ const QueryDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+    <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       {/* Back Button */}
       <div className="max-w-6xl mb-4">
         <button

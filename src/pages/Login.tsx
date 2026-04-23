@@ -24,13 +24,11 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="absolute top-6 left-6">
-        <span className="font-heading text-xl font-bold tracking-tight text-foreground">
-          Rivo
-        </span>
-      </div>
       <Card className="w-full max-w-md shadow-md border border-border">
         <CardContent className="p-8 space-y-6">
+          <div>
+            <img src="/rivo-logo.png" alt="Rivo" className="h-8 w-auto" />
+          </div>
           <div className="space-y-2">
             <h1 className="font-heading text-2xl font-bold text-foreground">
               Welcome

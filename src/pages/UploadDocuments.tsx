@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Eye, X, Upload, RefreshCw, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUpload } from "@/contexts/UploadContext";
+import { usePageLoader } from "@/hooks/use-page-loader";
+import DocumentsSkeleton from "@/components/skeletons/DocumentsSkeleton";
 
 type DocStatus = "not_uploaded" | "uploaded" | "wrong" | "error";
 
@@ -77,12 +79,15 @@ const buildInitialCategories = (): DocCategory[] => [
 ];
 
 const UploadDocuments = () => {
+  const isLoading = usePageLoader();
   const [categories, setCategories] = useState<DocCategory[]>(buildInitialCategories);
   const [viewingDoc, setViewingDoc] = useState<DocItem | null>(null);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const modalFileRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const { setHasUploaded } = useUpload();
+
+  if (isLoading) return <DocumentsSkeleton />;
 
   const updateDoc = (docId: string, updater: (doc: DocItem) => DocItem) => {
     setCategories((prev) =>
@@ -154,7 +159,7 @@ const UploadDocuments = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+      <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
         <div className="max-w-6xl relative">
           <button
             onClick={() => navigate("/")}
@@ -231,7 +236,7 @@ const UploadDocuments = () => {
     .filter((cat) => cat.docs.length > 0);
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+    <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       {/* Header */}
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">

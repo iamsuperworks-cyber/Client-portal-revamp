@@ -303,7 +303,7 @@ const WelcomeHome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+    <div className="min-h-screen bg-background px-6 pt-5 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       <div className="max-w-6xl flex flex-col lg:flex-row lg:gap-16 xl:gap-24">
         {/* Left side */}
         <div className="flex-1 min-w-0">
