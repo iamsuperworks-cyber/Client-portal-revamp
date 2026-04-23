@@ -39,7 +39,7 @@ const SetPassword = () => {
               </label>
               <Input
                 type="email"
-                value="martin.kask@email.com"
+                value="rajesh.nair80@gmail.com"
                 readOnly
                 className="bg-muted text-muted-foreground cursor-default"
               />

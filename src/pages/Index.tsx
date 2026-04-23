@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Upload, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { usePersona } from "@/contexts/PersonaContext";
 
 interface Bank {
   name: string;
@@ -16,20 +17,20 @@ const mockBanks: Bank[] = [
   { name: "Luminor", maxLoan: "AED 1,093,000", rate: "3.91%", term: "20 years" },
 ];
 
-const Index = () => {
+const Index = ({ onNext, isInitialFlow }: { onNext?: () => void; isInitialFlow?: boolean }) => {
   const banks = mockBanks;
   const navigate = useNavigate();
+  const { activePersona } = usePersona();
 
   return (
-    <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
-      {/* Greeting - full width */}
-      <div className="max-w-6xl">
+    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
+      {/* Greeting - full width again to align grid top with section content */}
+      <div className="max-w-6xl mb-6">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
-          Hello, Martin
+          Hello, {activePersona?.firstName || "Rajesh"}
         </h1>
-        <p className="font-body text-secondary-foreground text-base leading-relaxed max-w-xl mb-6">
-          Your eligibility has been reviewed by your mortgage specialist.
-          Below are the banks you qualify for.
+        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl">
+          Your specialist has matched you with these banks based on your profile.
         </p>
       </div>
 
@@ -55,15 +56,15 @@ const Index = () => {
                     <div className="flex items-baseline gap-6 font-body text-sm text-muted-foreground">
                       <span>
                         <span className="text-text-tertiary mr-1.5">Max</span>
-                        <span className="text-accent-foreground font-medium">{bank.maxLoan}</span>
+                        <span className="text-foreground font-medium">{bank.maxLoan}</span>
                       </span>
                       <span>
                         <span className="text-text-tertiary mr-1.5">Rate</span>
-                        <span className="text-accent-foreground font-medium">{bank.rate}</span>
+                        <span className="text-foreground font-medium">{bank.rate}</span>
                       </span>
                       <span>
                         <span className="text-text-tertiary mr-1.5">Term</span>
-                        <span className="text-accent-foreground font-medium">{bank.term}</span>
+                        <span className="text-foreground font-medium">{bank.term}</span>
                       </span>
                     </div>
                   </div>
@@ -74,21 +75,27 @@ const Index = () => {
         </div>
 
         {/* Right: CTA, note, support */}
-        <div className="lg:w-80 xl:w-96 mt-10 lg:mt-8 flex flex-col gap-6 lg:sticky lg:top-14 lg:self-start">
+        <div className="lg:w-80 xl:w-96 mt-10 lg:mt-0 flex flex-col gap-6 lg:sticky lg:top-8 lg:self-start">
           {/* CTA */}
           <div>
-            <Button variant="premium" className="w-full" onClick={() => navigate("/upload")}>
-              <Upload className="h-4 w-4 mr-2" />
-              Upload Documents
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
+            {isInitialFlow ? (
+              <Button variant="premium" className="w-full" onClick={onNext}>
+                Complete Your Profile
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            ) : (
+              <Button variant="premium" className="w-full" onClick={() => navigate("/upload")}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Documents
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
           </div>
 
           {/* Info card */}
           <div className="bg-card border border-border rounded-lg px-6 py-5">
             <p className="font-body text-muted-foreground text-sm leading-relaxed">
-              You only need to upload your documents once — they will be shared
-              securely with all eligible banks.
+              Complete the profile to get document checklist.
             </p>
           </div>
 

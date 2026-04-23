@@ -1,28 +1,29 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Mail, ChevronLeft, ChevronRight, ChevronRight as ChevronRightSmall, Building2, FileText, PenLine, Clock, Check } from "lucide-react";
+import { Phone, Mail, ChevronLeft, ChevronRight, ChevronRight as ChevronRightSmall, Building2, FileText, PenLine, Clock, Check, MessageSquare } from "lucide-react";
 import { useWelcomeState, WELCOME_STATE_LABELS, WelcomeState } from "@/contexts/WelcomeStateContext";
+import { usePersona } from "@/contexts/PersonaContext";
+import { useQueries } from "@/contexts/QueriesContext";
 
 const ALL_STATES: WelcomeState[] = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const bankList = [
   { name: "Nordea", stage: "Pre-approved" },
-  { name: "SEB", stage: "Under review" },
-  { name: "Swedbank", stage: "Submitted to credit" },
-  { name: "Luminor", stage: "Draft" },
+  { name: "SEB", stage: "Submitted to bank" },
+  { name: "Swedbank", stage: "Submitted to bank" },
+  { name: "Luminor", stage: "Submitted to bank" },
 ];
 
 const stagePillStyle = (stage: string): React.CSSProperties => {
   switch (stage) {
     case "Pre-approved":
-      return { background: "#16A34A", color: "#fff", fontWeight: 600 };
+      return { background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", fontWeight: 600 };
     case "Under review":
-      return { background: "#EA580C", color: "#fff", fontWeight: 600 };
-    case "Submitted to credit":
-      return { background: "#2563EB", color: "#fff", fontWeight: 600 };
-    case "Draft":
-      return { background: "#6B7280", color: "#fff", fontWeight: 600 };
+      return { background: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", fontWeight: 600 };
+    case "Submitted to bank":
+      return { background: "rgb(241, 245, 249)", color: "rgb(100, 116, 139)", border: "1px solid rgb(226, 232, 240)", fontWeight: 500 };
     default:
-      return { background: "#6B7280", color: "#fff", fontWeight: 600 };
+      return { background: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", fontWeight: 600 };
   }
 };
 
@@ -39,17 +40,43 @@ const DestinationChip = ({ icon: Icon, label, sublabel, route }: ChipProps) => {
   return (
     <button
       onClick={() => navigate(route)}
-      className="w-full flex items-center gap-3 hover:opacity-90 transition-opacity text-left"
-      style={{ background: "#D97706", borderRadius: "8px", padding: "14px 16px" }}
+      className="w-full flex items-center gap-3 hover:bg-orange-50/50 transition-colors text-left"
+      style={{ background: "#FFFFFF", borderRadius: "8px", padding: "14px 16px", border: "1px solid #FED7AA" }}
     >
-      <div className="shrink-0 rounded-md flex items-center justify-center" style={{ height: "30px", width: "30px", background: "rgba(255,255,255,0.2)" }}>
-        <Icon className="h-4 w-4" style={{ stroke: "#fff" }} />
+      <div className="shrink-0 rounded-md flex items-center justify-center" style={{ height: "32px", width: "32px", background: "#FFF7ED" }}>
+        <Icon className="h-4 w-4" style={{ stroke: "#F97316" }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "15px", fontWeight: 600, color: "#fff" }}>{label}</p>
-        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.8)" }}>{sublabel}</p>
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", fontWeight: 600, color: "#1C1E20" }}>{label}</p>
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", color: "#64748B" }}>{sublabel}</p>
       </div>
-      <ChevronRightSmall style={{ height: "22px", width: "22px", stroke: "#fff" }} />
+      <ChevronRightSmall style={{ height: "20px", width: "20px", stroke: "#F97316" }} />
+    </button>
+  );
+};
+
+/* ─── Query Chip ─── */
+interface QueryChipProps {
+  bankName: string;
+  queryId: string;
+}
+
+const QueryChip = ({ bankName, queryId }: QueryChipProps) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => navigate(`/queries/${queryId}`)}
+      className="w-full flex items-center gap-3 hover:bg-orange-50/50 transition-colors text-left"
+      style={{ background: "#FFFFFF", borderRadius: "8px", padding: "14px 16px", border: "1px solid #FED7AA" }}
+    >
+      <div className="shrink-0 rounded-md flex items-center justify-center" style={{ height: "32px", width: "32px", background: "#FFF7ED" }}>
+        <MessageSquare className="h-4 w-4" style={{ stroke: "#F97316" }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", fontWeight: 600, color: "#1C1E20" }}>Query from {bankName}</p>
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", color: "#64748B" }}>Needs your response</p>
+      </div>
+      <ChevronRightSmall style={{ height: "20px", width: "20px", stroke: "#F97316" }} />
     </button>
   );
 };
@@ -59,16 +86,20 @@ interface ActionBannerProps {
   timestamp: string;
   body: string;
   chips: ChipProps[];
+  queryChips?: QueryChipProps[];
 }
 
-const ActionBanner = ({ timestamp, body, chips }: ActionBannerProps) => (
-  <div className="overflow-hidden" style={{ background: "#FEF3E2", border: "1px solid #F5A623", borderTop: "4px solid #D97706", borderRadius: "10px", padding: "24px" }}>
+const ActionBanner = ({ timestamp, body, chips, queryChips = [] }: ActionBannerProps) => (
+  <div className="overflow-hidden" style={{ background: "#FFFBF7", border: "1px solid #FED7AA", borderTop: "4px solid #F97316", borderRadius: "10px", padding: "24px" }}>
     <div className="flex items-center justify-between mb-2">
-      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "26px", fontWeight: 600, color: "#92400E", letterSpacing: "-0.3px" }}>Action needed</span>
-      <span className="text-[11px]" style={{ color: "#854F0B", opacity: 0.7 }}>{timestamp}</span>
+      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "24px", fontWeight: 600, color: "#1C1E20", letterSpacing: "-0.3px" }}>Action needed</span>
+      <span className="text-[11px] font-medium" style={{ color: "#94A3B8" }}>{timestamp}</span>
     </div>
-    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#78350F", lineHeight: 1.5, marginBottom: "16px" }}>{body}</p>
+    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#475569", lineHeight: 1.5, marginBottom: "16px" }}>{body}</p>
     <div className="flex flex-col" style={{ gap: "8px" }}>
+      {queryChips.map((q) => (
+        <QueryChip key={q.queryId} {...q} />
+      ))}
       {chips.map((chip) => (
         <DestinationChip key={chip.label} {...chip} />
       ))}
@@ -78,23 +109,23 @@ const ActionBanner = ({ timestamp, body, chips }: ActionBannerProps) => (
 
 /* ─── Waiting Message ─── */
 const WaitingMessage = ({ title, subtext }: { title: string; subtext: string }) => (
-  <div className="text-center" style={{ background: "#E6F4F7", border: "2px solid #0F4C5C", borderRadius: "10px", padding: "28px 24px" }}>
-    <div className="mx-auto mb-3 rounded-full flex items-center justify-center" style={{ height: "52px", width: "52px", background: "#0F4C5C" }}>
-      <Clock className="h-5 w-5" style={{ stroke: "#fff" }} />
+  <div className="text-center" style={{ background: "hsl(var(--surface-elevated))", border: "1px solid hsl(var(--border))", borderRadius: "10px", padding: "28px 24px" }}>
+    <div className="mx-auto mb-3 rounded-full flex items-center justify-center" style={{ height: "52px", width: "52px", background: "hsl(var(--primary))" }}>
+      <Clock className="h-5 w-5 text-white" />
     </div>
-    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "22px", fontWeight: 600, color: "#0F4C5C", letterSpacing: "-0.3px" }}>{title}</p>
-    <p className="mt-1.5 max-w-md mx-auto" style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#164E63", lineHeight: 1.6 }}>{subtext}</p>
+    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "22px", fontWeight: 600, color: "hsl(var(--foreground))", letterSpacing: "-0.3px" }}>{title}</p>
+    <p className="mt-1.5 max-w-md mx-auto" style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "hsl(var(--muted-foreground))", lineHeight: 1.6 }}>{subtext}</p>
   </div>
 );
 
 /* ─── Completed Message ─── */
 const CompletedMessage = ({ title, subtext }: { title: string; subtext: string }) => (
-  <div className="text-center" style={{ background: "#ECFDF5", border: "2px solid #059669", borderRadius: "10px", padding: "28px 24px" }}>
-    <div className="mx-auto mb-3 rounded-full flex items-center justify-center" style={{ height: "52px", width: "52px", background: "#059669" }}>
-      <Check className="h-5 w-5" style={{ stroke: "#fff" }} />
+  <div className="text-center" style={{ background: "hsl(var(--surface-elevated))", border: "1px solid hsl(var(--primary))", borderRadius: "10px", padding: "28px 24px" }}>
+    <div className="mx-auto mb-3 rounded-full flex items-center justify-center" style={{ height: "52px", width: "52px", background: "hsl(var(--primary))" }}>
+      <Check className="h-5 w-5 text-white" />
     </div>
-    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "22px", fontWeight: 600, color: "#064E3B", letterSpacing: "-0.3px" }}>{title}</p>
-    <p className="mt-1.5 max-w-md mx-auto" style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#065F46", lineHeight: 1.5 }}>{subtext}</p>
+    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "22px", fontWeight: 600, color: "hsl(var(--foreground))", letterSpacing: "-0.3px" }}>{title}</p>
+    <p className="mt-1.5 max-w-md mx-auto" style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "hsl(var(--muted-foreground))", lineHeight: 1.5 }}>{subtext}</p>
   </div>
 );
 
@@ -145,19 +176,64 @@ const BankListSection = () => {
 const WelcomeHome = () => {
   const navigate = useNavigate();
   const { welcomeState, setWelcomeState } = useWelcomeState();
+  const { activePersona } = usePersona();
+  const { queries } = useQueries();
 
   const currentIdx = ALL_STATES.indexOf(welcomeState);
   const prev = () => setWelcomeState(ALL_STATES[(currentIdx - 1 + ALL_STATES.length) % ALL_STATES.length]);
   const next = () => setWelcomeState(ALL_STATES[(currentIdx + 1) % ALL_STATES.length]);
+
+  const activeQueries = queries
+    .filter((q) => q.status === "awaiting_client" || q.status === "overdue")
+    .sort((a, b) => b.messages[b.messages.length - 1].timestamp.localeCompare(a.messages[a.messages.length - 1].timestamp));
+
+  const queryChips: QueryChipProps[] = activeQueries.map((q) => ({
+    bankName: q.bankName,
+    queryId: q.id,
+  }));
 
   const docsChip: ChipProps = { icon: FileText, label: "Documents", sublabel: "9 remaining to upload", route: "/upload" };
   const docsChip1: ChipProps = { icon: FileText, label: "Documents", sublabel: "1 new document requested", route: "/upload" };
   const signChip: ChipProps = { icon: PenLine, label: "Sign", sublabel: "2 forms pending signature", route: "/sign" };
 
   const renderLeftContent = () => {
+    // If there are active queries, but we are in a neutral state, we might still want to show the banner
+    // However, the instructions say "Add a NEW STATE to the homepage. Do not replace any existing state."
+    // And "Trigger for this state: client has at least one active query on any bank."
+    // This implies that if there's an active query, we should see it.
+    // I'll wrap the existing ActionBanner logic to ALWAYS include query chips if they exist.
+
+    const wrapWithQueries = (node: React.ReactNode) => {
+      // Show query row only in tracking states (4, 5, 6, 7)
+      const isTrackingState = welcomeState >= 4 && welcomeState <= 7;
+      if (!isTrackingState || activeQueries.length === 0) return node;
+
+      if (React.isValidElement(node) && node.type === ActionBanner) {
+        return React.cloneElement(node as React.ReactElement<ActionBannerProps>, {
+          queryChips: queryChips
+        });
+      }
+      
+      if (React.isValidElement(node) && (node.type === WaitingMessage || node.type === CompletedMessage || node.type === BankListSection)) {
+          return (
+              <>
+                <ActionBanner 
+                    timestamp="Updated just now" 
+                    body="You have queries that need your response." 
+                    chips={[]}
+                    queryChips={queryChips}
+                />
+                {node}
+              </>
+          )
+      }
+
+      return node;
+    };
+
     switch (welcomeState) {
       case 1:
-        return (
+        return wrapWithQueries(
           <ActionBanner
             timestamp="Updated just now"
             body="You have documents waiting to be uploaded."
@@ -165,14 +241,14 @@ const WelcomeHome = () => {
           />
         );
       case 2:
-        return (
+        return wrapWithQueries(
           <WaitingMessage
             title="Your documents have been received"
             subtext="Our team is reviewing your documents and preparing your bank application forms. We'll notify you when they're ready to sign."
           />
         );
       case 3:
-        return (
+        return wrapWithQueries(
           <ActionBanner
             timestamp="Updated just now"
             body="You have bank forms ready for your signature."
@@ -180,9 +256,9 @@ const WelcomeHome = () => {
           />
         );
       case 4:
-        return <BankListSection />;
+        return wrapWithQueries(<BankListSection />);
       case 5:
-        return (
+        return wrapWithQueries(
           <>
             <ActionBanner
               timestamp="Updated just now"
@@ -193,7 +269,7 @@ const WelcomeHome = () => {
           </>
         );
       case 6:
-        return (
+        return wrapWithQueries(
           <>
             <ActionBanner
               timestamp="Updated just now"
@@ -204,7 +280,7 @@ const WelcomeHome = () => {
           </>
         );
       case 7:
-        return (
+        return wrapWithQueries(
           <>
             <ActionBanner
               timestamp="Updated just now"
@@ -215,23 +291,25 @@ const WelcomeHome = () => {
           </>
         );
       case 8:
-        return (
+        return wrapWithQueries(
           <CompletedMessage
             title="Your mortgage application is complete"
             subtext="Congratulations — your property transfer has been completed. Thank you for choosing Rivo to guide you through your mortgage journey."
           />
         );
+      default:
+        return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
+    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       <div className="max-w-6xl flex flex-col lg:flex-row lg:gap-16 xl:gap-24">
         {/* Left side */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight">
-              Welcome back, Martin
+              Welcome back, {activePersona?.firstName || "Rajesh"}
             </h1>
             {/* State switcher */}
             <div className="flex items-center gap-1.5">

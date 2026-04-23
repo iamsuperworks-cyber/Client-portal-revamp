@@ -64,6 +64,7 @@ const groupByBank = (forms: FormItem[]) => {
 const DocumentsToSign = () => {
   const [forms, setForms] = useState<FormItem[]>(initialForms);
   const [signingBank, setSigningBank] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("pending");
 
   const navigate = useNavigate();
 
@@ -77,8 +78,10 @@ const DocumentsToSign = () => {
   };
 
   const bankDocsForModal = signingBank ? forms.filter((f) => f.bank === signingBank && !f.signed) : [];
-
   const hasPendingOtherBanks = signingBank ? forms.some((f) => f.bank !== signingBank && !f.signed) : false;
+  const pendingOtherBankNames = signingBank
+    ? Object.keys(groupByBank(forms.filter((f) => f.bank !== signingBank && !f.signed)))
+    : [];
 
   const handleModalComplete = (signedIds: string[]) => {
     setForms((prev) =>
@@ -103,15 +106,20 @@ const DocumentsToSign = () => {
     if (nextBank) setSigningBank(nextBank);
   };
 
+  const handleViewSigned = () => {
+    setSigningBank(null);
+    setActiveTab("signed");
+  };
+
   return (
-    <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
+    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       {/* Header */}
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
-          Documents to Sign
+          Sign Your Bank Forms
         </h1>
-        <p className="font-body text-secondary-foreground text-base leading-relaxed max-w-xl mb-6">
-          Review and sign your bank forms. Signed documents are stored in your history.
+        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-6">
+          Review and sign your bank forms. Signed bank forms are stored in the signed tab.
         </p>
       </div>
 
@@ -119,7 +127,7 @@ const DocumentsToSign = () => {
       <div className="max-w-6xl flex flex-col lg:flex-row lg:gap-16 xl:gap-24">
         {/* Left: Tabs */}
         <div className="flex-1 min-w-0">
-          <Tabs defaultValue="pending">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="bg-transparent p-0 h-auto gap-8 mb-6">
               <TabsTrigger
                 value="pending"
@@ -148,6 +156,7 @@ const DocumentsToSign = () => {
                 </div>
               ) : (
                 <div className="space-y-5">
+                  <p className="font-body text-xs tracking-wide uppercase text-muted-foreground">Banks</p>
                   {Object.entries(pendingGroups).map(([bank, bankForms], groupIdx) => (
                     <section
                       key={bank}
@@ -156,11 +165,10 @@ const DocumentsToSign = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <p
-                          className="font-body uppercase tracking-widest"
+                          className="font-body uppercase tracking-widest text-[#1C1E20]"
                           style={{
                             fontSize: "16px",
                             fontWeight: 600,
-                            color: "rgb(26, 26, 26)",
                             letterSpacing: "0.05em",
                           }}
                         >
@@ -168,7 +176,7 @@ const DocumentsToSign = () => {
                         </p>
                         <button
                           onClick={() => handleReviewBank(bank)}
-                          className="font-body text-[12px] font-semibold cursor-pointer shrink-0 rounded-sm px-3 py-1.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors inline-flex items-center justify-center gap-1.5"
+                          className="font-body text-[12px] font-semibold cursor-pointer shrink-0 rounded-sm px-3 py-1.5 bg-primary text-primary-foreground hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-1.5"
                           style={{ width: "83.25px", height: "30px" }}
                         >
                           <Eye className="h-3 w-3" />
@@ -234,11 +242,11 @@ const DocumentsToSign = () => {
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <span
-                                className="inline-flex items-center rounded-full text-white"
+                                className="inline-flex items-center rounded-full text-primary"
                                 style={{
                                   fontSize: "11px",
                                   fontWeight: 500,
-                                  backgroundColor: "#1D9E75",
+                                  backgroundColor: "hsl(var(--primary) / 0.1)",
                                   padding: "4px 12px",
                                   borderRadius: "20px",
                                 }}
@@ -275,8 +283,7 @@ const DocumentsToSign = () => {
         <div className="lg:w-80 xl:w-96 mt-10 lg:mt-8 flex flex-col gap-6 lg:sticky lg:top-14 lg:self-start">
           <div className="bg-card border border-border rounded-lg px-6 py-5">
             <p className="font-body text-muted-foreground text-sm leading-relaxed">
-              Clicking Review opens the document for you to read. You will sign inside the document — nothing is signed
-              automatically.
+              Clicking Review will first ask you to set up your signature, if you haven't already. You'll then be able to read and sign each bank form.
             </p>
           </div>
           <div className="border-t border-border pt-6">
@@ -299,7 +306,9 @@ const DocumentsToSign = () => {
           navigate("/");
         }}
         onContinueSigning={handleContinueSigning}
+        onViewSigned={handleViewSigned}
         hasPendingOtherBanks={hasPendingOtherBanks}
+        pendingOtherBankNames={pendingOtherBankNames}
       />
     </div>
   );

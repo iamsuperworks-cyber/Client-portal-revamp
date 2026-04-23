@@ -39,7 +39,13 @@ const VerifyOtp = () => {
                 setOtp(value);
                 if (value.length === 6) {
                   sessionStorage.setItem("authenticated", "true");
-                  navigate("/");
+                  const redirectPath = sessionStorage.getItem("redirectPath");
+                  if (redirectPath) {
+                    sessionStorage.removeItem("redirectPath");
+                    navigate(redirectPath);
+                  } else {
+                    navigate("/");
+                  }
                 }
               }}
             >

@@ -1,10 +1,49 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUpload } from "@/contexts/UploadContext";
 import Index from "./Index";
 import WelcomeHome from "./WelcomeHome";
+import CompleteProfile from "./CompleteProfile";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { hasUploaded } = useUpload();
-  return hasUploaded ? <WelcomeHome /> : <Index />;
+  const [profileCompleted, setProfileCompleted] = useState(() => {
+    return sessionStorage.getItem("profileCompleted") === "true";
+  });
+  
+  // Track the current step in the initial flow
+  const [currentStep, setCurrentStep] = useState<'banks' | 'profile'>('banks');
+
+  // If profile is completed, show the main dashboard
+  if (profileCompleted) {
+    return <WelcomeHome />;
+  }
+
+  // If they haven't completed profile yet, run the indexed flow
+  if (!profileCompleted) {
+    if (currentStep === 'banks') {
+      return (
+        <Index 
+          isInitialFlow 
+          onNext={() => setCurrentStep('profile')} 
+        />
+      );
+    }
+    
+    return (
+      <CompleteProfile 
+        onComplete={() => {
+          sessionStorage.setItem("profileCompleted", "true");
+          setProfileCompleted(true);
+          navigate("/upload");
+        }} 
+      />
+    );
+  }
+
+  // Default fallback (should effectively be caught by the step logic above)
+  return <Index isInitialFlow onNext={() => setCurrentStep('profile')} />;
 };
 
 export default HomePage;

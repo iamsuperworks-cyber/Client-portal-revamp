@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
-  Settings,
+  User,
   LogOut,
   ChevronDown,
   CheckCircle2,
@@ -11,12 +11,13 @@ import {
   Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePersona } from "@/contexts/PersonaContext";
 
 const mockNotifications = [
   {
     id: 1,
     icon: CheckCircle2,
-    iconColor: "text-emerald-600 bg-emerald-50",
+    iconColor: "text-primary bg-primary/10",
     title: "Application Pre-approved",
     description: "Ajman Bank has pre-approved your mortgage application.",
     time: "2 hours ago",
@@ -25,7 +26,7 @@ const mockNotifications = [
   {
     id: 2,
     icon: AlertTriangle,
-    iconColor: "text-amber-600 bg-amber-50",
+    iconColor: "text-foreground bg-muted",
     title: "Document Expiring Soon",
     description: "Your salary certificate will expire in 15 days.",
     time: "5 hours ago",
@@ -34,7 +35,7 @@ const mockNotifications = [
   {
     id: 3,
     icon: MessageSquare,
-    iconColor: "text-blue-600 bg-blue-50",
+    iconColor: "text-primary bg-primary/10",
     title: "New Message from Advisor",
     description: "Your mortgage advisor has sent you a message.",
     time: "1 day ago",
@@ -53,6 +54,7 @@ const mockNotifications = [
 
 const TopBar = () => {
   const navigate = useNavigate();
+  const { activePersona } = usePersona();
   const [accountOpen, setAccountOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
@@ -85,7 +87,7 @@ const TopBar = () => {
   };
 
   return (
-    <div className="sticky top-0 right-0 z-40 flex items-center justify-end gap-1 px-6 py-4">
+    <div className="sticky top-0 right-0 z-40 flex items-center justify-end gap-1 px-6 py-1">
       {/* Notifications */}
       <div ref={notificationsRef} className="relative">
         <button
@@ -99,7 +101,7 @@ const TopBar = () => {
         >
           <Bell className="h-[18px] w-[18px]" />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-amber-500" />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
           )}
         </button>
         {notificationsOpen && (
@@ -125,7 +127,7 @@ const TopBar = () => {
                     <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{n.description}</p>
                     <p className="text-[11px] text-muted-foreground/70 mt-1">{n.time}</p>
                   </div>
-                  {!n.read && <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0 mt-1.5" />}
+                  {!n.read && <span className="h-2 w-2 rounded-full bg-orange-500 shrink-0 mt-1.5" />}
                 </div>
               ))}
             </div>
@@ -148,27 +150,17 @@ const TopBar = () => {
           )}
         >
           <span className="flex items-center justify-center h-7 w-7 rounded-full bg-primary/10 text-primary text-xs font-semibold shrink-0">
-            AB
+            {activePersona?.initials || "RK"}
           </span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
         {accountOpen && (
           <div className="absolute top-full right-0 mt-1 w-56 bg-card rounded-lg border border-border shadow-lg overflow-hidden z-50">
             <div className="px-4 py-3 border-b border-border">
-              <p className="text-sm font-semibold text-foreground">Abhishek Singh</p>
-              <p className="text-xs text-muted-foreground mt-0.5 truncate">abhisheksinghpro007@gmail.com</p>
+              <p className="text-sm font-semibold text-foreground">{activePersona?.fullName || "Rajesh Kumar Nair"}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">{activePersona?.email || "rajesh.nair80@gmail.com"}</p>
             </div>
             <div className="py-1">
-              <button
-                onClick={() => {
-                  setAccountOpen(false);
-                  navigate("/account");
-                }}
-                className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors"
-              >
-                <Settings className="h-4 w-4 text-muted-foreground" />
-                My Profile
-              </button>
               <button
                 className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-destructive hover:bg-muted/60 transition-colors"
                 onClick={() => {

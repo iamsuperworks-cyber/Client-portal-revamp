@@ -4,6 +4,7 @@ import {
   FileText,
   PenLine,
   Building2,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpload } from "@/contexts/UploadContext";
@@ -21,7 +22,8 @@ const navItems: NavItem[] = [
   { label: "Home", icon: Home, paths: ["/"], route: "/" },
   { label: "Documents", icon: FileText, paths: ["/upload"], route: "/upload", dotKey: "documents" },
   
-  { label: "Sign", icon: PenLine, paths: ["/sign"], route: "/sign", dotKey: "sign" },
+  { label: "Signatures", icon: PenLine, paths: ["/sign"], route: "/sign", dotKey: "sign" },
+  { label: "My Profile", icon: User, paths: ["/account"], route: "/account" },
 ];
 
 const AppSidebar = () => {
@@ -56,20 +58,20 @@ const AppSidebar = () => {
               className={cn(
                 "relative flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm font-body transition-colors text-left",
                 active
-                  ? "bg-primary/8 text-foreground font-medium"
+                  ? "bg-secondary text-primary font-medium"
                   : "text-muted-foreground hover:bg-muted/60"
               )}
             >
               {active && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary" />
               )}
-              <item.icon className="h-[18px] w-[18px] shrink-0" />
+              <item.icon className={cn("h-[18px] w-[18px] shrink-0", active && "text-primary")} />
               <span>{item.label}</span>
               {item.dotKey === "documents" && hasUploaded && showDocsDot && (
-                <span className="ml-auto h-2 w-2 rounded-full bg-amber-500" />
+                <span className="ml-auto h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
               )}
               {item.dotKey === "sign" && hasUploaded && showSignDot && (
-                <span className="ml-auto h-2 w-2 rounded-full bg-amber-500" />
+                <span className="ml-auto h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
               )}
             </button>
           );

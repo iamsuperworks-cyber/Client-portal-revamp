@@ -8,10 +8,10 @@ interface BankItem {
 }
 
 const banks: BankItem[] = [
-  { name: "Nordea", currentStage: "Draft", stageStatus: "current" },
-  { name: "SEB", currentStage: "Under review", stageStatus: "current" },
-  { name: "Swedbank", currentStage: "Submitted to credit", stageStatus: "current" },
-  { name: "Luminor", currentStage: "Credit queries", stageStatus: "current" },
+  { name: "Nordea", currentStage: "Pre-approved", stageStatus: "current" },
+  { name: "SEB", currentStage: "Submitted to bank", stageStatus: "upcoming" },
+  { name: "Swedbank", currentStage: "Submitted to bank", stageStatus: "upcoming" },
+  { name: "Luminor", currentStage: "Submitted to bank", stageStatus: "upcoming" },
 ];
 
 const stagePillClass = (status: BankItem["stageStatus"]): string => {
@@ -19,7 +19,7 @@ const stagePillClass = (status: BankItem["stageStatus"]): string => {
     case "completed":
       return "bg-primary/10 text-primary";
     case "current":
-      return "bg-accent text-accent-foreground";
+      return "bg-primary text-primary-foreground";
     case "upcoming":
       return "bg-muted text-muted-foreground";
   }
@@ -29,15 +29,15 @@ const BankList = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
+    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
 
       {/* Header */}
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
-          Bank List
+          Your Eligible Banks
         </h1>
-        <p className="font-body text-secondary-foreground text-base leading-relaxed max-w-xl mb-6">
-          Track the status of your application with each bank.
+        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-6">
+          Your specialist has matched you with these banks based on your profile. Review your options and proceed with your application.
         </p>
       </div>
 

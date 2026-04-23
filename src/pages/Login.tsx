@@ -3,10 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { usePersona, personas } from "@/contexts/PersonaContext";
 
 const Login = () => {
   const [contact, setContact] = useState("");
   const navigate = useNavigate();
+  const { setActivePersona } = usePersona();
+
+  const handleContinue = () => {
+    const input = contact.toLowerCase().trim();
+    const matchedPersona = personas.find(p => p.firstName.toLowerCase() === input);
+    
+    if (matchedPersona) {
+      setActivePersona(matchedPersona);
+    }
+    
+    sessionStorage.removeItem("profileCompleted");
+    navigate("/verify");
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
@@ -35,7 +49,7 @@ const Login = () => {
           </div>
           <Button
             className="w-full"
-            onClick={() => navigate("/verify")}
+            onClick={handleContinue}
           >
             Send Verification Code
           </Button>

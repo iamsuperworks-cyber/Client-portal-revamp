@@ -78,7 +78,6 @@ const buildInitialCategories = (): DocCategory[] => [
 
 const UploadDocuments = () => {
   const [categories, setCategories] = useState<DocCategory[]>(buildInitialCategories);
-  const [submitted, setSubmitted] = useState(false);
   const [viewingDoc, setViewingDoc] = useState<DocItem | null>(null);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const modalFileRef = useRef<HTMLInputElement | null>(null);
@@ -151,10 +150,11 @@ const UploadDocuments = () => {
   };
   const totalDocs = allDocs.length;
   const uploadedCount = allDocs.filter(isDocUploaded).length;
+  const submitted = uploadedCount === totalDocs && totalDocs > 0;
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
+      <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
         <div className="max-w-6xl relative">
           <button
             onClick={() => navigate("/")}
@@ -163,10 +163,10 @@ const UploadDocuments = () => {
             <X className="h-5 w-5" />
           </button>
           <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
-            Documents Submitted
+            Documents Uploaded
           </h1>
-          <p className="font-body text-secondary-foreground text-base leading-relaxed max-w-xl mb-6">
-            Your documents have been received. Our team will review and get back to you shortly.
+          <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-6">
+            Your documents have been uploaded. Our team will review and get back to you shortly.
           </p>
           <Button variant="premium" onClick={() => navigate("/")}>
             Go Home
@@ -231,13 +231,13 @@ const UploadDocuments = () => {
     .filter((cat) => cat.docs.length > 0);
 
   return (
-    <div className="min-h-screen bg-background px-6 py-10 md:px-12 md:py-14 lg:px-20 xl:px-28">
+    <div className="min-h-screen bg-background px-6 pt-0 pb-12 md:px-12 md:pt-1 md:pb-16 lg:px-20 lg:pt-2 xl:px-28 xl:pt-4">
       {/* Header */}
       <div className="max-w-6xl">
         <h1 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight mb-2">
           Upload Your Documents
         </h1>
-        <p className="font-body text-secondary-foreground text-base leading-relaxed max-w-xl mb-6">
+        <p className="font-body text-muted-foreground text-base leading-relaxed max-w-xl mb-6">
           Please upload the required documents below. Each document will be
           reviewed by your mortgage specialist before submission.
         </p>
@@ -269,7 +269,7 @@ const UploadDocuments = () => {
               {allWrongDocs.length > 0 && (
                 <div
                   style={{
-                    borderLeft: '3px solid #C2410C',
+                    borderLeft: '3px solid #1C1E20',
                     paddingLeft: '14px',
                   }}
                 >
@@ -278,8 +278,8 @@ const UploadDocuments = () => {
                     style={{
                       fontSize: '16px',
                       fontWeight: 600,
-                      color: '#C2410C',
-                      borderBottom: '1px solid #FED7AA',
+                      color: '#1C1E20',
+                      borderBottom: '1px solid #E2E8F0',
                       paddingBottom: '8px',
                       marginBottom: '8px',
                     }}
@@ -290,14 +290,14 @@ const UploadDocuments = () => {
                     {allWrongDocs.map((doc, i) => (
                       <div
                         key={doc.id}
-                        style={i < allWrongDocs.length - 1 ? { borderBottom: '0.5px solid #FED7AA', paddingBottom: '8px', marginBottom: '8px' } : {}}
+                        style={i < allWrongDocs.length - 1 ? { borderBottom: '0.5px solid #E2E8F0', paddingBottom: '8px', marginBottom: '8px' } : {}}
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">
-                            <span className="font-body" style={{ fontSize: '12px', fontWeight: 500, color: '#1a1a1a' }}>
+                            <span className="font-body" style={{ fontSize: '12px', fontWeight: 500, color: '#1C1E20' }}>
                               {doc.name}
                             </span>
-                            <p className="font-body mt-0.5" style={{ fontSize: '11px', color: '#B91C1C', lineHeight: 1.4 }}>
+                            <p className="font-body mt-0.5" style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', lineHeight: 1.4 }}>
                               Wrong document — this document could not be verified for this reason.
                             </p>
                           </div>
@@ -314,10 +314,10 @@ const UploadDocuments = () => {
                             />
                             <button
                               onClick={() => fileInputRefs.current[`wrong-${doc.id}`]?.click()}
-                              className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm inline-flex items-center justify-center gap-1.5"
-                              style={{ backgroundColor: '#C2410C', color: '#fff', width: '83.26px', height: '30px' }}
+                              className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground hover:opacity-90"
+                              style={{ width: '83.26px', height: '30px' }}
                             >
-                              <RefreshCw className="h-3 w-3" style={{ color: '#fff' }} />
+                              <RefreshCw className="h-3 w-3 text-primary-foreground" />
                               Replace
                             </button>
                           </div>
@@ -332,7 +332,7 @@ const UploadDocuments = () => {
                 <section
                   key={category.title}
                   className="mb-5 last:mb-0 px-4 py-3 -mx-4 rounded-sm"
-                  style={{ backgroundColor: catIdx % 2 === 0 ? '#FFFFFF' : '#F7F6F4' }}
+                  style={{ backgroundColor: catIdx % 2 === 0 ? '#FFFFFF' : '#F7F9FB' }}
                 >
                   {/* Hidden file input for category-level upload */}
                   {!category.individualUpload && (
@@ -351,16 +351,16 @@ const UploadDocuments = () => {
 
                   {/* Category heading with Upload button inline */}
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-body" style={{ fontSize: '16px', fontWeight: 600, color: '#1a1a1a', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    <p className="font-body" style={{ fontSize: '16px', fontWeight: 600, color: '#1C1E20', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                       {category.title}
                     </p>
                     {!category.individualUpload && (
                       <button
                         onClick={() => handleCategoryUpload(category.title)}
-                        className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-1.5"
+                        className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center justify-center gap-1.5"
                         style={{ width: '83.26px', height: '30px' }}
                       >
-                        <Upload className="h-3 w-3" />
+                        <Upload className="h-3 w-3 text-primary-foreground" />
                         Upload
                       </button>
                     )}
@@ -401,10 +401,10 @@ const UploadDocuments = () => {
                                   />
                                    <button
                                     onClick={() => triggerUpload(doc.id)}
-                                    className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center gap-1.5"
+                                    className="font-body text-[12px] font-semibold cursor-pointer transition-colors rounded-sm bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center justify-center gap-1.5"
                                     style={{ width: '83.26px', height: '30px' }}
                                   >
-                                    <Upload className="h-3 w-3" />
+                                    <Upload className="h-3 w-3 text-primary-foreground" />
                                     Upload
                                   </button>
                                 </div>
@@ -430,7 +430,7 @@ const UploadDocuments = () => {
             <div className="space-y-6">
               {uploadedCategories.map((category) => (
                 <div key={category.title}>
-                  <p className="font-body mb-2" style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a1a' }}>
+                  <p className="font-body mb-2" style={{ fontSize: '14px', fontWeight: 600, color: '#1C1E20' }}>
                     {category.title}
                   </p>
                   <div>
@@ -445,14 +445,14 @@ const UploadDocuments = () => {
                               {doc.name}
                             </span>
                             {doc.fileName && (
-                              <div className="flex items-center gap-1.5 mt-0.5 font-body text-xs" style={{ color: '#1D9E75' }}>
+                              <div className="flex items-center gap-1.5 mt-0.5 font-body text-xs text-primary">
                                 <Check className="h-3 w-3" />
                                 <span>{doc.fileName}</span>
                               </div>
                             )}
                             {/* Show subfield filenames if applicable */}
                             {doc.subFields && doc.subFields.filter(s => s.status === "uploaded").map((sub, si) => (
-                              <div key={si} className="flex items-center gap-1.5 mt-0.5 font-body text-xs" style={{ color: '#1D9E75' }}>
+                              <div key={si} className="flex items-center gap-1.5 mt-0.5 font-body text-xs text-primary">
                                 <Check className="h-3 w-3" />
                                 <span>{sub.label}: {sub.fileName}</span>
                               </div>
