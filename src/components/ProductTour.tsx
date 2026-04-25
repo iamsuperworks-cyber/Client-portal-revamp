@@ -105,14 +105,16 @@ const ProductTour = () => {
   };
 
   const TIP_W = isMobile ? Math.min(viewport.w - 32, 320) : 300;
+  const TIP_H = 240; // estimated tooltip height (covers most cases)
   const TIP_GAP = 24;
+  const ARROW_GAP = 40; // larger gap to fit the 28px arrow icon between tooltip and target
   const EDGE = 12;
 
   let placement: Placement = current.preferredPlacement;
   if (isMobile) {
     const spaceBelow = viewport.h - rect.bottom;
     const spaceAbove = rect.top;
-    placement = spaceBelow >= 200 || spaceBelow >= spaceAbove ? "bottom" : "top";
+    placement = spaceBelow >= TIP_H + TIP_GAP + EDGE || spaceBelow >= spaceAbove ? "bottom" : "top";
   } else if (placement === "right") {
     const spaceRight = viewport.w - rect.right;
     if (spaceRight < TIP_W + TIP_GAP) placement = "bottom";
@@ -127,7 +129,8 @@ const ProductTour = () => {
     tipLeft = rect.left + rect.width / 2 - TIP_W / 2;
     arrowDir = "up";
   } else if (placement === "top") {
-    tipTop = rect.top - TIP_GAP;
+    // Place tooltip ABOVE the target, leaving ARROW_GAP for the arrow
+    tipTop = rect.top - ARROW_GAP - TIP_H;
     tipLeft = rect.left + rect.width / 2 - TIP_W / 2;
     arrowDir = "down";
   } else {
@@ -137,7 +140,7 @@ const ProductTour = () => {
   }
 
   tipLeft = Math.max(EDGE, Math.min(tipLeft, viewport.w - TIP_W - EDGE));
-  tipTop = Math.max(EDGE, Math.min(tipTop, viewport.h - 200));
+  tipTop = Math.max(EDGE, Math.min(tipTop, viewport.h - TIP_H - EDGE));
 
   const arrowColor = "hsl(var(--primary))";
 
